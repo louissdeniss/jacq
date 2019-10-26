@@ -128,6 +128,10 @@ int gridReveal(Grid *grid, int x, int y){
     
     //Révélation de la case
     grid->el[x][y].revealed = 1;
+    
+    //pas de drapeau si révélée
+    
+    grid->el[x][y].flag = 0;
 
     //cas où la case est une bombe
     if(grid->el[x][y].value == -1)
@@ -196,9 +200,13 @@ void gridSetFlag(Grid *grid, int x, int y){
     //test d'appartenance à la grille
     if(!verifyAppartenance(grid, x, y)){
         printf("Erreur dans gridSetFlag, la case n'appartient pas au tableau.\n");
-        return -2;
     }
-    grid->el[x][y].flag=1;
+    if(grid->el[x][y].revealed){
+        printf("Erreur dans gridSetFlag, on ne peut pas placer un drapeau sur une case révélée.\n");
+    }
+    else{
+        grid->el[x][y].flag=1;
+    }
 }
 
 /* int gridWon(Grid *grid){
