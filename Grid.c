@@ -98,7 +98,7 @@ int gridReveal(Grid *grid, int x, int y){
     //gestion du cas où la case à révéler n'appartient pas au tableau
     if(!(verifyAppartenance(grid,x,y))){
         printf("Erreur dans gridReveal: cette case n'appartient pas à la grille.\n");
-        return -1;
+        return -2;
     }
 
     //gestion du cas où la grille est jouée pour la première fois (grid->played=0) -> on doit initialiser le tableau
@@ -146,7 +146,64 @@ int gridReveal(Grid *grid, int x, int y){
     }
 
     return 0;
+}            //DEBUT MODIFICATION !!!!!
+
+//fonction retournant le nombre de bombes adjacentes si la case est révélée, sinon -1.
+int gridValue(Grid *grid, int x, int y){
+    //test d'appartenance à la grille
+    if(!verifyAppartenance(grid, x, y)){
+        printf("Erreur dans gridValue, la case n'appartient pas au tableau.\n");
+        return -2;
+    }
+    if(grid->el[x][y].revealed)
+        return grid->el[x][y].value; //value=-1, ssi la case contient une bombe, ce qui n'est pas possible puisqu'on n'appellera pas gridValue si bombe il y a
+    else
+    {
+        return -1;
+    }
 }
+
+//fonction indiquant si une case (x,y) est révélée ou non
+int gridIsExplored(Grid *grid, int x, int y){
+    //test d'appartenance à la grille
+    if(!verifyAppartenance(grid, x, y)){
+        printf("Erreur dans gridIsExplored, la case n'appartient pas au tableau.\n");
+        return -2;
+    }
+    return grid->el[x][y].revealed;
+}
+
+//fonction retournant la largeur d'une grille donnée
+int gridWidth(Grid *g){
+    return g->width;
+}
+
+//fonction retournant la hauteur d'une grille donnée
+int gridHeight(Grid *g){
+    return g->height;
+}
+
+int gridIsFlagged(Grid *grid, int x, int y){
+    //test d'appartenance à la grille
+    if(!verifyAppartenance(grid, x, y)){
+        printf("Erreur dans gridIsFlagged, la case n'appartient pas au tableau.\n");
+        return -2;
+    }
+    return grid->el[x][y].flag;
+}
+
+void gridSetFlag(Grid *grid, int x, int y){
+    //test d'appartenance à la grille
+    if(!verifyAppartenance(grid, x, y)){
+        printf("Erreur dans gridSetFlag, la case n'appartient pas au tableau.\n");
+        return -2;
+    }
+    grid->el[x][y].flag=1;
+}
+
+/* int gridWon(Grid *grid){
+
+}*/   //FIN MODIFICATION !!!!!
 
 //fonction plaçant les bombes aléatoirement dans la grille
 static void placeBombs(Grid *grid, int x, int y){  
