@@ -3,7 +3,7 @@
 #include <math.h>
 #include <string.h>
 #include "Grid.h"
-
+//Ca fonctionne?
 #define min(a,b) (a<=b?a:b)
 #define max(a,b) (a<=b?b:a)
 
@@ -35,7 +35,7 @@ Grid *gridInit(int width, int height, int nbrBombs){
         printf("Erreur, la contrainte initiale liée aux bombes n'est pas respectée.\n");
         exit(-1);
     }
-    
+
     Grid *new;
     new = malloc(sizeof(Grid));
     if(!new){
@@ -47,7 +47,7 @@ Grid *gridInit(int width, int height, int nbrBombs){
         printf("Erreur d'allocation de mémoire dans GridInit.\n");
         free(new);
         exit(-1);
-    } 
+    }
     int i;
     int j;
     for(i=0;i<width;i++){
@@ -58,7 +58,7 @@ Grid *gridInit(int width, int height, int nbrBombs){
                 free(new->el[j]);
             free(new);
             exit(-1);
-        }  
+        }
         // initialisation des cases du tableau
         for(j=0;j<height;j++){
             new->el[i][j].value=0;
@@ -101,7 +101,7 @@ int gridReveal(Grid *grid, int x, int y){
     //gestion du cas où la grille est jouée pour la première fois (grid->played=0) -> on doit initialiser le tableau
     if(!grid->played){
         placeBombs(grid, x, y);
-        
+
         //bombes placées, il faut maintenant calculer les valeurs de chaque case
         int i,j;
         for(i = 0; i < width ;i++){
@@ -122,18 +122,18 @@ int gridReveal(Grid *grid, int x, int y){
         printf("Erreur dans gridReveal: cette case est déja révélée. \n");
         return -1;
     }
-    
+
     //Révélation de la case
     grid->el[x][y].revealed = 1;
-    
+
     //pas de drapeau si révélée
-    
+
     grid->el[x][y].flag = 0;
 
     //cas où la case est une bombe
     if(grid->el[x][y].value == -1)
         return 1;
-    
+
     //cas où aucune bombe dans les cases adjacentes
     if(!grid->el[x][y].value){
         //on révèle les cases adjacentes, si celles-ci appartiennent à la grille et ne sont pas encore révélées
@@ -147,7 +147,7 @@ int gridReveal(Grid *grid, int x, int y){
     }
 
     return 0;
-}            
+}
 
 //fonction retournant le nombre de bombes adjacentes si la case est révélée, sinon -1.
 int gridValue(Grid *grid, int x, int y){
@@ -208,7 +208,7 @@ void gridSetFlag(Grid *grid, int x, int y){
 
 
 //fonction plaçant les bombes aléatoirement dans la grille
-static void placeBombs(Grid *grid, int x, int y){  
+static void placeBombs(Grid *grid, int x, int y){
     int nbrBombs = grid->nbrBombs;
 
     int placedBombs = 0;
@@ -261,7 +261,7 @@ static int verifyAppartenance(Grid *grid, int x, int y){
     {
         return 0;
     }
-    
+
 }
 
 
