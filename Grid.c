@@ -71,6 +71,7 @@ Grid *gridInit(int width, int height, int nbrBombs){
     new->height = height;
     new->nbrBombs = nbrBombs;
     new->played = 0;
+    new->exploded = 0; //MODIF LOUIS: INITIALISATION DU CHAMP EXPLODED
 
     return new;
 }
@@ -134,8 +135,10 @@ int gridReveal(Grid *grid, int x, int y){
     grid->el[x][y].flag = 0;
 
     //cas où la case est une bombe
-    if(grid->el[x][y].value == -1)
+    if(grid->el[x][y].value == -1){
+        grid->exploded = 1; //MODIF LOUIS: INDICATION QUE LA GRILLE EXPLOSE
         return 1;
+    }
     
     //cas où aucune bombe dans les cases adjacentes
     if(!grid->el[x][y].value){
@@ -271,28 +274,14 @@ static int verifyAppartenance(Grid *grid, int x, int y){
 }
 //!DEBUT MODIFICTATIONS!
 
-//Rassemble tes fonctions calculValue et gridvalue, Possiblement à supprimer
-int gridValue(Grid *grid, int x, int y){
-int w,h;
-unsigned int value = 0;
-for (h = -1;h<=1;h++){
-    for(w = -1;w<=1;w++){
-        if ((h==0 && w==0) || x+w>=grid->width || x+w<0 || y+h>=grid->height || y+h<0) //Vérifie si la case est dans la grille
-            continue;                                               //Et évite d'ajouter à "value" la valeur de la case étudiée.
-        if (grid->el[x+w][y+h].value == -1)
-            value++;
-    }
-}
-return value;
-}
 
 
 
 
-//Afiche la grille
+//Afiche la grille //LOUIS: DEVRAIT-ON PRINT LES AUTRES
 void gridPrint(Grid *grid)
 {
-    unsigned int i, j,k;
+    int i, j,k;  // MODIF LOUIS: ENLEVER LE UNSIGNED CAR IL GENERAIT DES WARNINGS
 
     for(j = grid->height-1;j>=0;j--){//Le sens de parcours est un peu spécial car non semblable à la répresentation dans la mémoire.
                                      //Les lignes deviennent colones et vise-versa.
@@ -301,8 +290,8 @@ void gridPrint(Grid *grid)
         printf("\n");
         for (i = 0;i<grid->width;i++){
             printf("|"); //Affiche "|" à chauqe fois qu'on veut afficher un nouveau caractère.
-            if (grid->el[i][j].revealed && !grid->exploded) //Affiche la valeur de la case si celle-ci est révélée et que la grille n'a pas explosée.
-                                                            //La case n'est donc pas une bombe.
+            if (grid->el[i][j].revealed && grid->el[i][j].value != -1) //Affiche la valeur de la case si celle-ci est révélée, MODIF LOUIS,sauf si bombe (cas suivant)
+                                                           //CETTE MODIF PERMET D AFFICHER L ETAT DES CASES REVELEES AVANT EXPLOSION
                 printf("%d", grid->el[i][j].value);
             else if (grid->el[i][j].flag && !grid->exploded)//Affiche un drapeau si cela est demandé et que la grille n'a pas explosé,
                                                             //car dans ce cas il faut afficher 'X'.
@@ -320,11 +309,11 @@ void gridPrint(Grid *grid)
 
 }
 
-//Dit si la partie est gagné, continue ou est perdue
+//Dit si la partie est gagné, continue ou est perdue 
 
 int gridWon(Grid *grid){
 
-    unsigned int i,j, control = 1;
+    int i,j, control = 1; //MODIF LOUIS: ENLEVER UNSIGNED,CAR IL GENERE WARNINGS
 
     for (j=grid->height-1;j>=0;j--){
         for (i=0;i<grid->width;i++){
