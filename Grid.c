@@ -88,9 +88,6 @@ void gridFree(Grid *grid){
     free(grid);
 }
 
-/* void gridPrint(Grid *grid){
-    
-} */
 
 int gridReveal(Grid *grid, int x, int y){
     int width = grid->width;
@@ -150,7 +147,7 @@ int gridReveal(Grid *grid, int x, int y){
     }
 
     return 0;
-}            //DEBUT MODIFICATION !!!!!
+}            
 
 //fonction retournant le nombre de bombes adjacentes si la case est révélée, sinon -1.
 int gridValue(Grid *grid, int x, int y){
@@ -209,9 +206,6 @@ void gridSetFlag(Grid *grid, int x, int y){
     }
 }
 
-/* int gridWon(Grid *grid){
-
-}*/   //FIN MODIFICATION !!!!!
 
 //fonction plaçant les bombes aléatoirement dans la grille
 static void placeBombs(Grid *grid, int x, int y){  
@@ -269,30 +263,13 @@ static int verifyAppartenance(Grid *grid, int x, int y){
     }
     
 }
-//!DEBUT MODIFICTATIONS!
-
-//Rassemble tes fonctions calculValue et gridvalue, Possiblement à supprimer
-int gridValue(Grid *grid, int x, int y){
-int w,h;
-unsigned int value = 0;
-for (h = -1;h<=1;h++){
-    for(w = -1;w<=1;w++){
-        if ((h==0 && w==0) || x+w>=grid->width || x+w<0 || y+h>=grid->height || y+h<0) //Vérifie si la case est dans la grille
-            continue;                                               //Et évite d'ajouter à "value" la valeur de la case étudiée.
-        if (grid->el[x+w][y+h].value == -1)
-            value++;
-    }
-}
-return value;
-}
-
 
 
 
 //Afiche la grille
 void gridPrint(Grid *grid)
 {
-    unsigned int i, j,k;
+    int i, j,k;
 
     for(j = grid->height-1;j>=0;j--){//Le sens de parcours est un peu spécial car non semblable à la répresentation dans la mémoire.
                                      //Les lignes deviennent colones et vise-versa.
@@ -324,7 +301,7 @@ void gridPrint(Grid *grid)
 
 int gridWon(Grid *grid){
 
-    unsigned int i,j, control = 1;
+    int i,j, control = 1;
 
     for (j=grid->height-1;j>=0;j--){
         for (i=0;i<grid->width;i++){
