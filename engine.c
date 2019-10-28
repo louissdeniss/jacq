@@ -7,16 +7,16 @@
 int play(int width, int height,int nbrBombs,
          Move (*computeMove)(Grid *), int show)
 {
-    int WonOrLost = 0; //Détermine si la partie est gagnée ou perdue.
+    int WonOrLost = 0; //DÃ©termine si la partie est gagnÃ©e ou perdue.
     Grid *mine_field = gridInit(width, height, nbrBombs);
     Move action;
 
-    while (!WonOrLost){ //Tant qu'on a pas perdu ou gagné, on continue!
+    while (!WonOrLost){ //Tant qu'on a pas perdu ou gagnÃ©, on continue!
 
         if (show)
             gridPrint(mine_field);
         action = computeMove(mine_field);
-        if (action.flag == 0){ //On révèle
+        if (action.flag == 0){ //On rÃ©vÃ¨le
             if (gridReveal(mine_field, action.x, action.y) == 1)//gridreveal retourne 1 si la case est une bombe => PERDDU => sort de la boucle.
                 break;
         }
@@ -27,7 +27,6 @@ int play(int width, int height,int nbrBombs,
             return 0;
         }
         else{ //Commande non connue, on recommence la boucle sans afficher la grille.
-            action.flag = 2;
             printf("Unknown action.\n");
             continue;
         }
