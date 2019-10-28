@@ -9,6 +9,18 @@ int play(int width, int height,int nbrBombs,
 {
     int WonOrLost = 0; //Détermine si la partie est gagnée ou perdue.
     Grid *mine_field = gridInit(width, height, nbrBombs);
+         
+         //MODIF LOUIS
+    //Gestion du cas où les paramètres sont mauvais (gridInit renvoit pointeur NULL)
+    if(!mine_field){
+        printf("Veuillez entrer paramètres valables! \n");
+    }
+
+    //Gestion du cas où show différent de 0 ou 1
+    if(show != 0 && show != 1){
+        printf("Veuillez entrer paramètres valables! \n");
+    }
+         
     Move action;
 
     while (!WonOrLost){ //Tant qu'on a pas perdu ou gagné, on continue!
@@ -35,6 +47,12 @@ int play(int width, int height,int nbrBombs,
     }
     gridPrint(mine_field); //Quelque soit la valeur de show, on affiche la grille de fin!
     gridFree(mine_field);
+         
+    if(WonOrLost == 1)
+        printf("Bien joué! Tu est trop fort! \n");
+    
+    if(WonOrLost == -1)
+        printf("La prochaine fois sera la bonne! \n");
 
     return WonOrLost;
 }
