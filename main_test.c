@@ -4,7 +4,8 @@
 #include "solver.h"
 
 int main (int argc, char **argv){
-play(7, 9, 4, human, 1);
+
+play(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), human, 1);
 
 return 0;
 }
