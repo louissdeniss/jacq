@@ -68,7 +68,10 @@ Move heuristic(Grid *grid){
     if(!revealed){
         i=rand() % width;
         j=rand() % height;
-        gridReveal(grid,i,j);
+        action.x = i;
+        action.y = j;
+        action.flag = 0;
+        return action;
     }
 
     int revealedAdj; //nombre de cases révélées adjacentes
