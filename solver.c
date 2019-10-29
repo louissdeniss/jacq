@@ -107,8 +107,10 @@ Move heuristic(Grid *grid){
                 }
                 
                 //si une case révélée est de valeur = nbr flags adjacents + cases non-révélées ajdacentes
+                //cases non révélées = cases adjacentes -cases révélées -cases flag
+                //--> flags adj + non-revel = flagAdj + adjacent - revealedAdj -flagAdj = adjacent -revealedAdj
                 //alors on flag une case non-révélée
-                if(value == flagAdj + adjacent - revealedAdj){
+                if(value == adjacent - revealedAdj){
                     action.flag = 1;
                     newx = i;
                     newy = j;
@@ -156,7 +158,7 @@ Move heuristic(Grid *grid){
         // a nous de trouver une case non-révélée adjacente
         for(i = newx - 1; i <= newx + 1; i++){
             for(j = newy - 1; j <= newy + 1; j++){
-                if(verifyAppartenance(grid, i, j) && !gridIsExplored(grid, i, j)){
+                if(verifyAppartenance(grid, i, j) && !gridIsExplored(grid, i, j) && !gridIsFlagged(grid, i, j)){
                     action.x = i;
                     action.y = j;
                     return action;
