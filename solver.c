@@ -50,7 +50,7 @@ Move heuristic(Grid *grid){
 
     Move action;
 
-    //on vérifie si une case a déjà été révélée, si oui revealed vaudra 0 à la fin de la boucle
+    //on vérifie si une case a déjà été révélée, si oui revealed vaudra 1 à la fin de la boucle
     int i,j;
     int revealed=0;
     for(i = 0; i < width; i++){
