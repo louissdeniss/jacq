@@ -23,8 +23,8 @@ Move human(Grid *grid){
         return human(grid);
     }
 
-    //gestion du cas où on veut révéler une case qui l'est déjà
-    if(gridIsExplored(grid, action.x, action.y) && !action.flag){
+    //gestion du cas où on veut révéler une case qui l'est déjà ou y assigner un drapeau
+    if(gridIsExplored(grid, action.x, action.y) && action.flag != -1){
         printf("Cette case a déjà été révélée! \n");
         return human(grid);
     }
