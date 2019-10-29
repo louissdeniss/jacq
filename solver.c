@@ -107,7 +107,7 @@ Move heuristic(Grid *grid){
                 
                 //si une case révélée est de valeur = nbr flags adjacents + cases non-révélées ajdacentes
                 //alors on flag une case non-révélée
-                if(value == flagAdj + adjacent - revealed){
+                if(value == flagAdj + adjacent - revealedAdj){
                     action.flag = 1;
                     newx = i;
                     newy = j;
