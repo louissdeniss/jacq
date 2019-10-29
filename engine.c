@@ -23,6 +23,9 @@ int play(int width, int height,int nbrBombs,
         return 0; //mauvais paramètres synonymes d'abandon (la partie n'a même pas débutée).
     }
          
+    //on prend l'hypothèse que la valeur renvoyée part la fonction pointée par computeMove sera celle d'un coup existant,
+    //ce qui est le cas, puisque nous éffectuons des tests dans cette fonction
+         
     Move action;
 
     while (!WonOrLost){ //Tant qu'on a pas perdu ou gagné, on continue!
