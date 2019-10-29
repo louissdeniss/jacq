@@ -141,7 +141,7 @@ Move heuristic(Grid *grid){
         for(i = newx - 1; i <= newx + 1; i++){
 
             for(j = newy - 1; j <= newy + 1; j++){
-                if(!gridIsExplored(grid, i, j)){
+                if(verifyAppartenance(grid, i, j) && !gridIsExplored(grid, i, j)){
                     action.x = i;
                     action.y = j;
                     return action;
@@ -155,7 +155,7 @@ Move heuristic(Grid *grid){
         // a nous de trouver une case non-révélée adjacente
         for(i = newx - 1; i <= newx + 1; i++){
             for(j = newy - 1; j <= newy + 1; j++){
-                if(!gridIsExplored(grid, i, j)){
+                if(verifyAppartenance(grid, i, j) && !gridIsExplored(grid, i, j)){
                     action.x = i;
                     action.y = j;
                     return action;
