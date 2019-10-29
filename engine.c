@@ -14,11 +14,13 @@ int play(int width, int height,int nbrBombs,
     //Gestion du cas où les paramètres sont mauvais (gridInit renvoit pointeur NULL)
     if(!mine_field){
         printf("Veuillez entrer paramètres valables! \n");
+        return 0; //mauvais paramètres synonymes d'abandon (la partie n'a même pas débutée).
     }
 
     //Gestion du cas où show différent de 0 ou 1
     if(show != 0 && show != 1){
         printf("Veuillez entrer paramètres valables! \n");
+        return 0; //mauvais paramètres synonymes d'abandon (la partie n'a même pas débutée).
     }
          
     Move action;
