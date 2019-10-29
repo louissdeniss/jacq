@@ -98,7 +98,8 @@ Move heuristic(Grid *grid){
                 flagAdj = countFlags(grid, i, j);
                 
                 //si une case révélée est de valeur = nbr de flags adjacents, on révèle une case adjacente
-                if(value == flagAdj){
+                //sauf si le nombre de cases marquées d'un drapeau est justement égal au nombre de case non-révélées
+                if(value == flagAdj && flagAdj + revealedAdj != adjacent){
                     action.flag = 0;
                     newx = i;
                     newy = j;
@@ -141,7 +142,7 @@ Move heuristic(Grid *grid){
         for(i = newx - 1; i <= newx + 1; i++){
 
             for(j = newy - 1; j <= newy + 1; j++){
-                if(verifyAppartenance(grid, i, j) && !gridIsExplored(grid, i, j)){
+                if(verifyAppartenance(grid, i, j) && !gridIsExplored(grid, i, j) && !gridIsFlagged(grid, i, j)){
                     action.x = i;
                     action.y = j;
                     return action;
