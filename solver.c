@@ -90,12 +90,13 @@ Move heuristic(Grid *grid){
                 //on se trouve sur une case révélée
                 revealedAdj = countRevealed(grid, i, j);
                 adjacent = countAdjacent(grid, i, j);
+                flagAdj = countFlags(grid, i, j);
 
-                if(revealedAdj == adjacent)
-                    continue;  //OK?        //si toutes les adjacentes sont révélées, on passe
+                if(revealedAdj + flagAdj == adjacent)
+                    continue;  //OK?        //si toutes les adjacentes sont révélées ou marquées, on passe
 
                 value = gridValue(grid, i, j);
-                flagAdj = countFlags(grid, i, j);
+
                 
                 //si une case révélée est de valeur = nbr de flags adjacents, on révèle une case adjacente
                 //sauf si le nombre de cases marquées d'un drapeau est justement égal au nombre de case non-révélées
