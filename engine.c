@@ -56,7 +56,7 @@ int play(int width, int height,int nbrBombs,
     if(WonOrLost == 1)
         printf("Bien joué! Tu est trop fort! \n");
     
-    if(WonOrLost == -1)
+    if(WonOrLost == -1 || action.flag == -1)
         printf("La prochaine fois sera la bonne! \n");
 
     return WonOrLost;
