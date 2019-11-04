@@ -131,14 +131,6 @@ Move heuristic(Grid *grid){
 
     //on a arrêté de parcourir le tableau: 3cas
 
-    //on n'a trouvé aucun coup jouable, on doit abandonner
-    if(!stopboucle){
-        action.x = 0;
-        action.y = 0;
-        action.flag = -1;
-        return action;
-    }
-
     //on a trouvé une case qu'on pouvait révéler
     if(action.flag == 0){
         // a nous de trouver une case non-révélée adjacente
@@ -168,7 +160,7 @@ Move heuristic(Grid *grid){
         }
     }
 
-    //on ne devrait pas en arriver ici, mais par prévention
+    //on a parcouru tout le tableau et trouvé aucun coup jouable
     action.x = 0;
     action.y = 0;
     action.flag = -1;
