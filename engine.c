@@ -26,8 +26,10 @@ int play(int width, int height,int nbrBombs,
     //ce qui est le cas, puisque nous éffectuons des tests dans cette fonction
          
     Move action;
+         
+    int WonOrLost=gridWon(mine_field);
 
-    while (!gridWon(mine_field)){ //Tant qu'on a pas perdu ou gagné, on continue!
+    while (!WonOrLost){ //Tant qu'on a pas perdu ou gagné, on continue!
 
         if (show)
             gridPrint(mine_field);
@@ -35,6 +37,7 @@ int play(int width, int height,int nbrBombs,
         if (action.flag == 0){ //On révèle
             if (gridReveal(mine_field, action.x, action.y) == 1)//gridreveal retourne 1 si la case est une bombe => PERDDU => sort de la boucle.
                 break;
+                WonOrLost=-1;
         }
         else if (action.flag == 1) //Pose un flag
             gridSetFlag(mine_field, action.x, action.y);
@@ -46,6 +49,7 @@ int play(int width, int height,int nbrBombs,
             printf("Unknown action.\n");
             continue;
         }
+             WonOrLost=gridWon(mine_field);
 
     }
     gridPrint(mine_field); //Quelque soit la valeur de show, on affiche la grille de fin!
