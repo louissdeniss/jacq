@@ -168,7 +168,7 @@ Move heuristic(Grid *grid){
         }
     }
 
-    //on ne deverait pas en arriver ici, mais par prévention
+    //on ne devrait pas en arriver ici, mais par prévention
     action.x = 0;
     action.y = 0;
     action.flag = -1;
