@@ -7,7 +7,6 @@
 int play(int width, int height,int nbrBombs,
          Move (*computeMove)(Grid *), int show)
 {
-    int WonOrLost = 0; //Détermine si la partie est gagnée ou perdue.
     Grid *mine_field = gridInit(width, height, nbrBombs);
          
          //MODIF LOUIS
@@ -28,7 +27,7 @@ int play(int width, int height,int nbrBombs,
          
     Move action;
 
-    while (!WonOrLost){ //Tant qu'on a pas perdu ou gagné, on continue!
+    while (!gridWon(mine_field)){ //Tant qu'on a pas perdu ou gagné, on continue!
 
         if (show)
             gridPrint(mine_field);
@@ -47,7 +46,6 @@ int play(int width, int height,int nbrBombs,
             printf("Unknown action.\n");
             continue;
         }
-        WonOrLost = gridWon(mine_field);
 
     }
     gridPrint(mine_field); //Quelque soit la valeur de show, on affiche la grille de fin!
