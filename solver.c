@@ -15,7 +15,7 @@ Move human(Grid *grid){
 
     printf("X: ");
     scanf("%d", &(action.x));
-    //QUESTION:ENLEVER LE BUG QUAND ON ENTRE UNE LETTRE?
+    //Commentaire: On peut considérer qu'on entre un entier.
 
     printf("Y: ");
     scanf("%d", &(action.y));
@@ -26,6 +26,7 @@ Move human(Grid *grid){
     //gestion du cas où les coordonnées entrées n'appartiennent pas au tableau
     if(!verifyAppartenance(grid, action.x, action.y)){
         printf("Veuillez entrer des coordonnées valables. \n");
+        printf("%d \n",action.x);
         return human(grid);
     }
 
@@ -68,7 +69,7 @@ Move heuristic(Grid *grid){
     if(!revealed){
         i=rand() % width;
         j=rand() % height;
-        action.x = i;
+        action.x = i; //MODIFSSS
         action.y = j;
         action.flag = 0;
         return action;
@@ -79,6 +80,7 @@ Move heuristic(Grid *grid){
     int adjacent; //nombre de cases ajdacentes
     int value; //valeur de le case
     int stopboucle = 0; //quand il vaudra 1, on aura trouvé une instruction jouable et on sortira de la boucle.
+    
     //on parcourt le tableau à la recherche de cases révélées.
     int newx,newy; //on stockera la case où on peut éffectuer une action, si on en trouve une
     for(i = 0; i < width; i++){
@@ -92,11 +94,10 @@ Move heuristic(Grid *grid){
                 adjacent = countAdjacent(grid, i, j);
                 flagAdj = countFlags(grid, i, j);
 
-                if(revealedAdj + flagAdj == adjacent)
+                if(revealedAdj +flagAdj == adjacent)
                     continue;  //OK?        //si toutes les adjacentes sont révélées ou marquées, on passe
 
-                value = gridValue(grid, i, j);
-
+                value = gridValue(grid, i, j); //gridValue
                 
                 //si une case révélée est de valeur = nbr de flags adjacents, on révèle une case adjacente
                 //sauf si le nombre de cases marquées d'un drapeau est justement égal au nombre de case non-révélées
@@ -133,7 +134,7 @@ Move heuristic(Grid *grid){
 
     //on a trouvé une case qu'on pouvait révéler
     if(action.flag == 0){
-        // a nous de trouver une case non-révélée adjacente
+        // a nous de trouver une case non-révélée adjacente, qui n'est pas marquée d'un drapeau
         for(i = newx - 1; i <= newx + 1; i++){
 
             for(j = newy - 1; j <= newy + 1; j++){
@@ -151,7 +152,7 @@ Move heuristic(Grid *grid){
         // a nous de trouver une case non-révélée adjacente
         for(i = newx - 1; i <= newx + 1; i++){
             for(j = newy - 1; j <= newy + 1; j++){
-                if(verifyAppartenance(grid, i, j) && !gridIsExplored(grid, i, j) && !gridIsFlagged(grid, i, j)){
+                if(verifyAppartenance(grid, i, j) && !gridIsFlagged(grid, i, j) && !gridIsExplored(grid, i, j) ){
                     action.x = i;
                     action.y = j;
                     return action;
@@ -160,7 +161,7 @@ Move heuristic(Grid *grid){
         }
     }
 
-    //on a parcouru tout le tableau et trouvé aucun coup jouable
+    //on a arrêté de parcourir le tableau et trouvé aucun coup jouable
     action.x = 0;
     action.y = 0;
     action.flag = -1;
