@@ -22,7 +22,7 @@ struct Grid_t {
 cases **el;
 int width, height, nbrBombs;
 int played; // grille pas encore jouée:0 ,sinon:1
-int lost; // perdu:1 gagné:-1 sinon:0 //MODIF DENIS!!!!! Dorénavant, ce champ stocke aussi si la partie est gagnée
+int lost; // perdu:1 gagné:-1 sinon:0
 };
 
 Grid *gridInit(int width, int height, int nbrBombs){
@@ -190,6 +190,11 @@ int gridValue(Grid *grid, int x, int y){
         printf("Erreur dans gridValue, la case n'appartient pas au tableau.\n");
         exit(-1); //MODIF
     }
+    //COMMENT GERER LE CAS OU ON VEUT LA VALEUR D UNE BOMBE
+    if(grid->el[x][y].value == -1){
+        printf("Erreur dans gridValue, cette case contient une bombe \n");
+        exit(-1); // MODIF DENIS:return ???
+    }
     if(grid->el[x][y].revealed)
         return grid->el[x][y].value; //value=-1, ssi la case contient une bombe, ce qui n'est pas possible puisqu'on n'appellera pas gridValue si bombe il y a
     else
@@ -231,6 +236,7 @@ void gridSetFlag(Grid *grid, int x, int y){
     //test d'appartenance à la grille
     if(!verifyAppartenance(grid, x, y)){
         printf("Erreur dans gridSetFlag, la case n'appartient pas au tableau.\n");
+        exit(-1);
     }
     if(grid->el[x][y].revealed){
         printf("Erreur dans gridSetFlag, on ne peut placer un drapeau sur une case révélée.\n");
