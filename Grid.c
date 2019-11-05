@@ -187,7 +187,7 @@ int gridValue(Grid *grid, int x, int y){
     //test d'appartenance à la grille
     if(!verifyAppartenance(grid, x, y)){
         printf("Erreur dans gridValue, la case n'appartient pas au tableau.\n");
-        return -2;
+        exit(-1);
     }
     if(grid->el[x][y].revealed)
         return grid->el[x][y].value; //value=-1, ssi la case contient une bombe, ce qui n'est pas possible puisqu'on n'appellera pas gridValue si bombe il y a
@@ -221,7 +221,7 @@ int gridIsFlagged(Grid *grid, int x, int y){
     //test d'appartenance à la grille
     if(!verifyAppartenance(grid, x, y)){
         printf("Erreur dans gridIsFlagged, la case n'appartient pas au tableau.\n");
-        return -2;
+        exit(-1);
     }
     return grid->el[x][y].flag;
 }
