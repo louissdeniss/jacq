@@ -22,7 +22,7 @@ struct Grid_t {
 cases **el;
 int width, height, nbrBombs;
 int played; // grille pas encore jouée:0 ,sinon:1
-int exploded; // grille a explosé:1, sinon:0
+int lost; // perdu:1 gagné:-1 sinon:0 //MODIF DENIS!!!!! Dorénavant, ce champ stocke aussi si la partie est gagnée
 };
 
 Grid *gridInit(int width, int height, int nbrBombs){
@@ -71,13 +71,14 @@ Grid *gridInit(int width, int height, int nbrBombs){
     new->height = height;
     new->nbrBombs = nbrBombs;
     new->played = 0;
-    new->exploded = 0;
+    new->lost = 0;
 
     return new;
 }
 
 //Comment implémenter la programmation défensive?? Typeof??
 void gridFree(Grid *grid){
+
     int i;
     int width=grid->width;
 
@@ -105,10 +106,10 @@ void gridPrint(Grid *grid)
             if (grid->el[i][j].revealed && grid->el[i][j].value != -1) //Affiche la valeur de la case si celle-ci est révélée et que la grille n'a pas explosée.
                                                             //La case n'est donc pas une bombe.
                 printf("%d", grid->el[i][j].value);
-            else if (grid->el[i][j].flag && !grid->exploded)//Affiche un drapeau si cela est demandé et que la grille n'a pas explosé,
+            else if (grid->el[i][j].flag && !grid->lost)//Affiche un drapeau si cela est demandé et que la grille n'a pas explosé,
                                                             //car dans ce cas il faut afficher 'X'.
                 printf("F");
-            else if (grid->el[i][j].value == -1 && grid->exploded)//Si la case contient une bombe et que la grille a explosée.
+            else if (grid->el[i][j].value == -1 && grid->lost)//Si la case contient une bombe et que la grille a explosée.
                 printf("X");
             else
                 printf(" ");//la grille n'est pas révélée ou ne contient pas de bombe (dans le cas ou  la grille a explosée).
@@ -163,7 +164,7 @@ int gridReveal(Grid *grid, int x, int y){
 
     //cas où la case est une bombe
     if(grid->el[x][y].value == -1){
-        grid->exploded = 1;
+        grid->lost = 1;
         return 1;
     }
     
@@ -187,7 +188,7 @@ int gridValue(Grid *grid, int x, int y){
     //test d'appartenance à la grille
     if(!verifyAppartenance(grid, x, y)){
         printf("Erreur dans gridValue, la case n'appartient pas au tableau.\n");
-        exit(-1);
+        exit(-1); //MODIF
     }
     if(grid->el[x][y].revealed)
         return grid->el[x][y].value; //value=-1, ssi la case contient une bombe, ce qui n'est pas possible puisqu'on n'appellera pas gridValue si bombe il y a
@@ -255,6 +256,9 @@ int gridWon(Grid *grid){
             else if (grid->el[i][j].revealed && grid->el[i][j].value == -1)//Révélée et Bombe => Perdu
                 return -1;
         }
+    }
+    if(control == 1){
+        grid->lost = -1;
     }
     return control;
 
