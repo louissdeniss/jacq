@@ -16,7 +16,7 @@ typedef struct{
     int value; //nbr bombes adjacentes ou -1 si bombe.
     int flag; //case marquée d'un drapeau:1 non:0
     int revealed; //case révélée:1 non:0
-}cases;
+} cases;
 //Définition concrète du type grid
 struct Grid_t {
 cases **el;
@@ -35,7 +35,7 @@ Grid *gridInit(int width, int height, int nbrBombs){
         printf("Erreur, la contrainte initiale liée aux bombes n'est pas respectée.\n");
         exit(-1);
     }
-
+    
     Grid *new;
     new = malloc(sizeof(Grid));
     if(!new){
@@ -47,7 +47,7 @@ Grid *gridInit(int width, int height, int nbrBombs){
         printf("Erreur d'allocation de mémoire dans GridInit.\n");
         free(new);
         exit(-1);
-    }
+    } 
     int i;
     int j;
     for(i=0;i<width;i++){
@@ -58,7 +58,7 @@ Grid *gridInit(int width, int height, int nbrBombs){
                 free(new->el[j]);
             free(new);
             exit(-1);
-        }
+        }  
         // initialisation des cases du tableau
         for(j=0;j<height;j++){
             new->el[i][j].value=0;
@@ -71,8 +71,7 @@ Grid *gridInit(int width, int height, int nbrBombs){
     new->height = height;
     new->nbrBombs = nbrBombs;
     new->played = 0;
-    new->exploded = 0; //MODIF LOUIS: INITIALISATION DU CHAMP EXPLODED
-
+    new->exploded = 0;
 
     return new;
 }
@@ -90,23 +89,51 @@ void gridFree(Grid *grid){
     free(grid);
 }
 
-/* void gridPrint(Grid *grid){
+//Afiche la grille
+//Afiche la grille
+void gridPrint(Grid *grid)
+{
+    int i, j,k;
 
-} */
+    for(j = grid->height-1;j>=0;j--){//Le sens de parcours est un peu spécial car non semblable à la répresentation dans la mémoire.
+                                     //Les lignes deviennent colones et vise-versa.
+        for(k = 0; k<2*(grid->width)+1; k++)//Affiche '----' à chaque fois qu'on commence une nouvelle ligne.
+            printf("-");
+        printf("\n");
+        for (i = 0;i<grid->width;i++){
+            printf("|"); //Affiche "|" à chauqe fois qu'on veut afficher un nouveau caractère.
+            if (grid->el[i][j].revealed && grid->el[i][j].value != -1) //Affiche la valeur de la case si celle-ci est révélée et que la grille n'a pas explosée.
+                                                            //La case n'est donc pas une bombe.
+                printf("%d", grid->el[i][j].value);
+            else if (grid->el[i][j].flag && !grid->exploded)//Affiche un drapeau si cela est demandé et que la grille n'a pas explosé,
+                                                            //car dans ce cas il faut afficher 'X'.
+                printf("F");
+            else if (grid->el[i][j].value == -1 && grid->exploded)//Si la case contient une bombe et que la grille a explosée.
+                printf("X");
+            else
+                printf(" ");//la grille n'est pas révélée ou ne contient pas de bombe (dans le cas ou  la grille a explosée).
+        }
+        printf("|\n");
+    }
+    for(k = 0; k<2*(grid->width)+1; k++)
+            printf("-");
+    printf("\n");
+
+}
 
 int gridReveal(Grid *grid, int x, int y){
     int width = grid->width;
     int height = grid->height;
     //gestion du cas où la case à révéler n'appartient pas au tableau
-    if(!(verifyAppartenance(grid,x,y))){
+    if(x < 0  ||  x >= width  ||  y < 0  ||  y >= height){
         printf("Erreur dans gridReveal: cette case n'appartient pas à la grille.\n");
-        return -2;
+       exit(-1); //MODIF LOUIS
     }
 
     //gestion du cas où la grille est jouée pour la première fois (grid->played=0) -> on doit initialiser le tableau
     if(!grid->played){
         placeBombs(grid, x, y);
-
+        
         //bombes placées, il faut maintenant calculer les valeurs de chaque case
         int i,j;
         for(i = 0; i < width ;i++){
@@ -125,36 +152,35 @@ int gridReveal(Grid *grid, int x, int y){
     //gestion du cas où la case à révéler est déja révélée
     if(grid->el[x][y].revealed){
         printf("Erreur dans gridReveal: cette case est déja révélée. \n");
-        return -1;
+        //MODIF LOUIS: ENLEVER -1
     }
-
+    
     //Révélation de la case
     grid->el[x][y].revealed = 1;
 
-    //pas de drapeau si révélée
-
+    //pas de drapeau si révélé
     grid->el[x][y].flag = 0;
 
     //cas où la case est une bombe
     if(grid->el[x][y].value == -1){
-        grid->exploded = 1; //MODIF LOUIS: INDICATION QUE LA GRILLE EXPLOSE
+        grid->exploded = 1;
         return 1;
     }
-
+    
     //cas où aucune bombe dans les cases adjacentes
     if(!grid->el[x][y].value){
         //on révèle les cases adjacentes, si celles-ci appartiennent à la grille et ne sont pas encore révélées
         int i,j;
         for(i = x - 1; i <= x + 1; i++){
             for(j = y - 1; j <= y + 1; j++){
-                if(verifyAppartenance(grid,i,j) && grid->el[i][j].revealed == 0) //MODIICTAION JULIEN
+                if(verifyAppartenance(grid,i,j) && grid->el[i][j].revealed == 0)
                     gridReveal(grid, i, j);
             }
         }
     }
 
     return 0;
-}            //DEBUT MODIFICATION !!!!!
+}
 
 //fonction retournant le nombre de bombes adjacentes si la case est révélée, sinon -1.
 int gridValue(Grid *grid, int x, int y){
@@ -176,7 +202,7 @@ int gridIsExplored(Grid *grid, int x, int y){
     //test d'appartenance à la grille
     if(!verifyAppartenance(grid, x, y)){
         printf("Erreur dans gridIsExplored, la case n'appartient pas au tableau.\n");
-        return -2;
+        exit(-1);
     }
     return grid->el[x][y].revealed;
 }
@@ -205,20 +231,37 @@ void gridSetFlag(Grid *grid, int x, int y){
     if(!verifyAppartenance(grid, x, y)){
         printf("Erreur dans gridSetFlag, la case n'appartient pas au tableau.\n");
     }
-    else if(grid->el[x][y].revealed){ //MODIFICATION JULIEN: Sinon on risque un dépassement de mémoire.
-        printf("Erreur dans gridSetFlag, on ne peut pas placer un drapeau sur une case révélée.\n");
+    if(grid->el[x][y].revealed){
+        printf("Erreur dans gridSetFlag, on ne peut placer un drapeau sur une case révélée.\n");
     }
     else{
         grid->el[x][y].flag=1;
     }
 }
 
-/* int gridWon(Grid *grid){
+//fonction qui indique une victoire, une défaite ou ni l'un, ni l'autre
+int gridWon(Grid *grid){
 
-}*/   //FIN MODIFICATION !!!!!
+    int i,j, control = 1;
+
+    for (j=grid->height-1;j>=0;j--){
+        for (i=0;i<grid->width;i++){
+            if (!grid->el[i][j].revealed && grid->el[i][j].value != -1)//Non-révélée mais pas de bombe => Pas gagné
+                control = 0;
+            else if (grid->el[i][j].revealed && grid->el[i][j].value != -1)//Révélée mais pas de bombe => ok
+                continue;
+            else if (!grid->el[i][j].revealed && grid->el[i][j].value == -1)//Non-révélée et Bombe! => OK
+                continue;
+            else if (grid->el[i][j].revealed && grid->el[i][j].value == -1)//Révélée et Bombe => Perdu
+                return -1;
+        }
+    }
+    return control;
+
+}
 
 //fonction plaçant les bombes aléatoirement dans la grille
-static void placeBombs(Grid *grid, int x, int y){
+static void placeBombs(Grid *grid, int x, int y){  
     int nbrBombs = grid->nbrBombs;
 
     int placedBombs = 0;
@@ -258,9 +301,6 @@ static int calculValue(Grid *grid, int x, int y){
     return Value;
 }
 
-
-
-
 //fonction qui vérifie si la case de cooordonnées x,y appartient bien à la grille
 static int verifyAppartenance(Grid *grid, int x, int y){
     int width=grid->width;
@@ -271,69 +311,5 @@ static int verifyAppartenance(Grid *grid, int x, int y){
     {
         return 0;
     }
-
+    
 }
-//!DEBUT MODIFICTATIONS!
-
-
-
-
-
-//Afiche la grille //LOUIS: DEVRAIT-ON PRINT LES AUTRES
-void gridPrint(Grid *grid)
-{
-    int i, j,k;  // MODIF LOUIS: ENLEVER LE UNSIGNED CAR IL GENERAIT DES WARNINGS
-
-    for(j = grid->height-1;j>=0;j--){//Le sens de parcours est un peu spécial car non semblable à la répresentation dans la mémoire.
-        printf(" ");                            //Les lignes deviennent colones et vise-versa.
-        for(k = 0; k<2*(grid->width)+1; k++)//Affiche '----' à chaque fois qu'on commence une nouvelle ligne.
-            printf("-");
-        printf("\n%d", j); //Quadrillage
-        for (i = 0;i<grid->width;i++){
-            printf("|"); //Affiche "|" à chauqe fois qu'on veut afficher un nouveau caractère.
-            if (grid->el[i][j].revealed && grid->el[i][j].value != -1) //Affiche la valeur de la case si celle-ci est révélée, MODIF LOUIS,sauf si bombe (cas suivant)
-                                                           //CETTE MODIF PERMET D AFFICHER L ETAT DES CASES REVELEES AVANT EXPLOSION
-                printf("%d", grid->el[i][j].value);
-            else if (grid->el[i][j].flag && !grid->exploded)//Affiche un drapeau si cela est demandé et que la grille n'a pas explosé,
-                                                            //car dans ce cas il faut afficher 'X'.
-                printf("F");
-            else if (grid->el[i][j].value == -1 && grid->exploded)//Si la case contient une bombe et que la grille a explosée.
-                printf("X");
-            else
-                printf(" ");//la grille n'est pas révélée ou ne contient pas de bombe (dans le cas ou  la grille a explosée).
-        }
-        printf("|\n");
-    }
-    printf(" ");
-    for(k = 0; k<2*(grid->width)+1; k++)
-            printf("-");
-    printf("\n  ");
-    for(k = 0; k<grid->width; k++)
-            printf("%d ",k);
-    printf("\n");
-
-}
-
-//Dit si la partie est gagné, continue ou est perdue
-
-int gridWon(Grid *grid){
-
-    int i,j, control = 1; //MODIF LOUIS: ENLEVER UNSIGNED,CAR IL GENERE WARNINGS
-
-    for (j=grid->height-1;j>=0;j--){
-        for (i=0;i<grid->width;i++){
-            if (!grid->el[i][j].revealed && grid->el[i][j].value != -1)//Non-révélée mais pas de bombe => Pas gagné
-                control = 0;
-            else if (grid->el[i][j].revealed && grid->el[i][j].value != -1)//Révélée mais pas de bombe => ok
-                continue;
-            else if (!grid->el[i][j].revealed && grid->el[i][j].value == -1)//Non-révélée et Bombe! => OK
-                continue;
-            else if (grid->el[i][j].revealed && grid->el[i][j].value == -1)//Révélée et Bombe => Perdu
-                return -1;
-        }
-    }
-    return control;
-
-}
-
-
